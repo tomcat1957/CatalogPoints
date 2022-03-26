@@ -1,26 +1,14 @@
+import sys
+
 import axipy
 
-from .UtilsLib import loadModules, setEnvAddLib
-
-list_modules=['pandas','openpyxl']
-setEnvAddLib()
-try:
-    import pandas as pm
-
-except:
-    loadModules(['pandas'])
-try:
-
-    import openpyxl as opxl
-except:
-    loadModules(['openpyxl'])
-from .toolprocessing.DlgCatalogPoints import DlgCatalog
-from .toolprocessing.SimpleGeometryCatalog import BuildCatalog
 
 
 class Plugin:
     def __init__(self, iface):
         self.iface = iface
+        sys.path.append(iface.local_file('dependencies'))
+
         menubar = iface.menubar
         tr = iface.tr
         local_file=iface.local_file
@@ -44,10 +32,13 @@ class Plugin:
         #self.__viewService.countChanged.disconnect(self.__tyrIsReadyForMapAndSelection)
         self.iface.menubar.remove(self.__action)
     def run_tools(self):
+
+        from .toolprocessing.DlgCatalogPoints import DlgCatalog
         dlg=DlgCatalog()
         dlg.show()
         if dlg.isOk:
             propertyRun=dlg.PropertyRun
+            from .toolprocessing.SimpleGeometryCatalog import BuildCatalog
             BuildCatalog(propertyRun)
     def __changeSelection(self):
         print("run select")
